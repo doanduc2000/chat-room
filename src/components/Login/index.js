@@ -2,12 +2,21 @@ import React from 'react';
 import { Row, Col, Button, Typography } from 'antd';
 import { auth, provider } from '../firebase/config';
 import { signInWithPopup } from 'firebase/auth';
-
+import { addDocument } from '../firebase/service';
 const { Title } = Typography;
 
 const Login = () => {
-  const handleFbLogin = () => {
-    signInWithPopup(auth, provider);
+  const handleFbLogin = async () => {
+    const { _tokenResponse, user } = await signInWithPopup(auth, provider);
+    if (_tokenResponse?.isNewUser) {
+      await addDocument('users', {
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        uid: user.uid,
+        providerId: _tokenResponse.providerId,
+      });
+    }
   };
 
   return (

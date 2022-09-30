@@ -16,9 +16,10 @@ const AuthProvider = ({ children }) => {
         setUser({ displayName, email, uid, photoURL });
         setIsLoading(false);
         navigate('/', { replace: true });
-      } else {
-        navigate('/login');
+        return;
       }
+      setIsLoading(false);
+      navigate('/login', { replace: true });
     });
     return () => {
       unsubscribed();
